@@ -203,6 +203,7 @@ class Trabalhador(Pessoa):
         if value == "perfeita" or value == "ceia":
             return 50
     def comer(self):
+        self.mostrar_armazenavel("geladeira")
         if len(self.geladeira["espaço"]) > 0:
             comida = next(iter(self.geladeira["espaço"].items()))
             nome = comida[1]['name']
@@ -330,8 +331,6 @@ class Trabalhador(Pessoa):
                 TRABALHO: {self.trabalho}
                 SALÁRIO: {self.salario}
                 DINHEIRO NA CONTA BANCÁRIA: {self.dinheiro}
-                DINHEIRO NA CARTEIRA: em breve
-                ESTADO CIVIL: em breve
 
                 --- STATUS DE VIDA ---
                 FOME: {self.fome}
@@ -341,6 +340,14 @@ class Trabalhador(Pessoa):
 ''')
         print(string)
         beep_ringtone_keep()
+    def ir_ao_medico(self):
+        doencas = ["Doença n.1", "Doença n.2", "Deonça n.3"]
+        doenca = random.choice(doencas)
+        if self.saude < 75:
+            print("[i] -- DOENÇA --[i]")
+            print(f"{self.nome} foi diagnosticado com {doenca}")
+            beep_ringtone()
+            print("[i] -- Curando... - [i]")
 
 
 class Loja:

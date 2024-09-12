@@ -162,6 +162,7 @@ class terminal_events():
         [.] -- MENU DE AÇÕES. FAÇA DE TUDO AQUI! -- [.]
         [1] - COMPRAR NA LOJA
         [2] - COMER ITEM (MAIS VELHO DA GELADEIRA.)
+        [3] - IR AO MÉDICO (DISPONÍVEL UMA VEZ POR MINUTO.).
                          
         INSIRA A OPÇÃO: """)
         stringio.write(data)
@@ -177,6 +178,9 @@ class terminal_events():
             self.jogador.comprar_item(self.loja, item_tobuy, quantity_tobuy)
         elif resposta == "2":
             self.jogador.comer()
+        elif resposta == "3":
+            self.jogador.ir_ao_medico()
+        
 
     def _grow_up_task(self):
         self.jogador.crescer()
