@@ -1,0 +1,403 @@
+import copy
+import math
+import random
+import json
+import winsound
+import time
+import os
+import sys
+def beep_critical():
+    winsound.Beep(57, 5000)
+    time.sleep(2)
+def beep_error():
+    winsound.Beep(100, 1500)
+    time.sleep(2)
+    os.system("cls")
+def beep_warn():
+    winsound.Beep(500, 500)
+    time.sleep(2)
+    os.system("cls")
+def beep_ringtone():
+    winsound.Beep(1000, 100)
+    winsound.Beep(1500, 100)
+    time.sleep(3)
+    os.system("cls")
+def beep_ringtone_keep():
+    winsound.Beep(1000, 100)
+    winsound.Beep(1500, 100)
+def beep_ringtone_fast():
+    winsound.Beep(1000, 100)
+    winsound.Beep(1500, 100)
+    os.system("cls")
+class Pessoa:
+    instances = []
+    def __init__(self, nome, idade):
+        Pessoa.instances.append(self)
+        self.nome = nome
+        self.idade = idade
+        self.saude = 100
+        self.fome = 100
+
+    def demaior(self):
+        if self.idade >= 18:
+            return True
+        else:
+            return False
+
+    def get_instances(self):
+        print("[<>] -- PERSONAGENS -- [<>] \n")
+        num = 0
+        for instance in self.instances:
+            num += 1
+            print(f"{num}: Nome: {instance.nome}, Idade: {instance.idade} \n")
+
+        
+        
+class Trabalhador(Pessoa):
+    instances = []
+    def __init__(self, nome, idade, salario, profissao, dinheiro):
+        super().__init__(nome, idade)
+        self.trabalho = profissao
+        self.salario = salario 
+        self.dinheiro = dinheiro
+        self.armazenamento = {"maxslots":10, "espaço":{}}
+        self.geladeira = {"maxslots":5, "espaço":{}}
+        Trabalhador.instances.append(self)
+        print(f"Seja bem vindo ao mundo, {self.nome}")
+
+    def qualTrabalho(self):
+        return self.trabalho
+    
+    def crescer(self):
+        if self.idade > 110:
+                           print(f"""              
+                    ,----..      ,---,               ,'  , `.    ,---,.   
+                    /   /   \    '  .' \           ,-+-,.' _ |  ,'  .' |   
+                    |   :     :  /  ;    '.      ,-+-. ;   , ||,---.'   |   
+                    .   |  ;. / :  :       \    ,--.'|'   |  ;||   |   .'   
+                    .   ; /--`  :  |   /\   \  |   |  ,', |  '::   :  |-,   
+                    ;   | ;  __ |  :  ' ;.   : |   | /  | |  ||:   |  ;/|   
+                    |   : |.' .'|  |  ;/  \   \'   | :  | :  |,|   :   .'   
+                    .   | '_.' :'  :  | \  \ ,';   . |  ; |--' |   |  |-,   
+                    '   ; : \  ||  |  '  '--'  |   : |  | ,    '   :  ;/|   
+                    '   | '/  .'|  :  :        |   : '  |/     |   |    \   
+                    |   :    /  |  | ,'        ;   | |`-'      |   :   .'   
+                    \   \ .'   `--''          |   ;/          |   | ,'     
+                    `---`                    '---'           `----' ,---, 
+                        ,----..                                    ,`--.' | 
+                    /   /   \                  ,---,.,-.----.   |   :  : 
+                    /   .     :        ,---.  ,'  .' |\    /  \  '   '  ; 
+                    .   /   ;.  \      /__./|,---.'   |;   :    \ |   |  | 
+                    .   ;   /  ` ; ,---.;  ; ||   |   .'|   | .\ : '   :  ; 
+                    ;   |  ; \ ; |/___/ \  | |:   :  |-,.   : |: | |   |  ' 
+                    |   :  | ; | '\   ;  \ ' |:   |  ;/||   |  \ : '   :  | 
+                    .   |  ' ' ' : \   \  \: ||   :   .'|   : .  / ;   |  ; 
+                    '   ;  \; /  |  ;   \  ' .|   |  |-,;   | |  \ `---'. | 
+                    \   \  ',  /    \   \   ''   :  ;/||   | ;\  \ `--..`; 
+                    ;   :    /      \   `  ;|   |    \:   ' | \.'.--,_    
+                    \   \ .'        :   \ ||   :   .':   : :-'  |    |`. 
+                        `---`           '---" |   | ,'  |   |.'    `-- -`, ;
+                                            `----'    `---'        '---`" 
+
+                      
+                      
+                - A hora da morte chega para todos um dia... {self.nome} morreu de Fome. -- [i]
+                      """)
+        else:
+            self.idade += 1
+            random_hunger_decrease = random.randint(50, 80)
+            self.fome -= random_hunger_decrease
+            random_will_lose_health = random.randint(0, 1)
+            if random_will_lose_health == 1:
+                self.saude -= random.randint(1, 30)
+            if self.fome < 0:
+                print(f"""            
+                    ,----..      ,---,               ,'  , `.    ,---,.   
+                    /   /   \    '  .' \           ,-+-,.' _ |  ,'  .' |   
+                    |   :     :  /  ;    '.      ,-+-. ;   , ||,---.'   |   
+                    .   |  ;. / :  :       \    ,--.'|'   |  ;||   |   .'   
+                    .   ; /--`  :  |   /\   \  |   |  ,', |  '::   :  |-,   
+                    ;   | ;  __ |  :  ' ;.   : |   | /  | |  ||:   |  ;/|   
+                    |   : |.' .'|  |  ;/  \   \'   | :  | :  |,|   :   .'   
+                    .   | '_.' :'  :  | \  \ ,';   . |  ; |--' |   |  |-,   
+                    '   ; : \  ||  |  '  '--'  |   : |  | ,    '   :  ;/|   
+                    '   | '/  .'|  :  :        |   : '  |/     |   |    \   
+                    |   :    /  |  | ,'        ;   | |`-'      |   :   .'   
+                    \   \ .'   `--''          |   ;/          |   | ,'     
+                    `---`                    '---'           `----' ,---, 
+                        ,----..                                    ,`--.' | 
+                    /   /   \                  ,---,.,-.----.   |   :  : 
+                    /   .     :        ,---.  ,'  .' |\    /  \  '   '  ; 
+                    .   /   ;.  \      /__./|,---.'   |;   :    \ |   |  | 
+                    .   ;   /  ` ; ,---.;  ; ||   |   .'|   | .\ : '   :  ; 
+                    ;   |  ; \ ; |/___/ \  | |:   :  |-,.   : |: | |   |  ' 
+                    |   :  | ; | '\   ;  \ ' |:   |  ;/||   |  \ : '   :  | 
+                    .   |  ' ' ' : \   \  \: ||   :   .'|   : .  / ;   |  ; 
+                    '   ;  \; /  |  ;   \  ' .|   |  |-,;   | |  \ `---'. | 
+                    \   \  ',  /    \   \   ''   :  ;/||   | ;\  \ `--..`; 
+                    ;   :    /      \   `  ;|   |    \:   ' | \.'.--,_    
+                    \   \ .'        :   \ ||   :   .':   : :-'  |    |`. 
+                        `---`           '---" |   | ,'  |   |.'    `-- -`, ;
+                                            `----'    `---'        '---`" 
+
+                      
+                      
+                - A hora da morte chega para todos um dia... {self.nome} morreu de Fome. -- [i]
+                      """)
+                beep_critical()
+                os._exit(666)
+            if self.saude < 0:
+                print(f"""              
+                    ,----..      ,---,               ,'  , `.    ,---,.   
+                    /   /   \    '  .' \           ,-+-,.' _ |  ,'  .' |   
+                    |   :     :  /  ;    '.      ,-+-. ;   , ||,---.'   |   
+                    .   |  ;. / :  :       \    ,--.'|'   |  ;||   |   .'   
+                    .   ; /--`  :  |   /\   \  |   |  ,', |  '::   :  |-,   
+                    ;   | ;  __ |  :  ' ;.   : |   | /  | |  ||:   |  ;/|   
+                    |   : |.' .'|  |  ;/  \   \'   | :  | :  |,|   :   .'   
+                    .   | '_.' :'  :  | \  \ ,';   . |  ; |--' |   |  |-,   
+                    '   ; : \  ||  |  '  '--'  |   : |  | ,    '   :  ;/|   
+                    '   | '/  .'|  :  :        |   : '  |/     |   |    \   
+                    |   :    /  |  | ,'        ;   | |`-'      |   :   .'   
+                    \   \ .'   `--''          |   ;/          |   | ,'     
+                    `---`                    '---'           `----' ,---, 
+                        ,----..                                    ,`--.' | 
+                    /   /   \                  ,---,.,-.----.   |   :  : 
+                    /   .     :        ,---.  ,'  .' |\    /  \  '   '  ; 
+                    .   /   ;.  \      /__./|,---.'   |;   :    \ |   |  | 
+                    .   ;   /  ` ; ,---.;  ; ||   |   .'|   | .\ : '   :  ; 
+                    ;   |  ; \ ; |/___/ \  | |:   :  |-,.   : |: | |   |  ' 
+                    |   :  | ; | '\   ;  \ ' |:   |  ;/||   |  \ : '   :  | 
+                    .   |  ' ' ' : \   \  \: ||   :   .'|   : .  / ;   |  ; 
+                    '   ;  \; /  |  ;   \  ' .|   |  |-,;   | |  \ `---'. | 
+                    \   \  ',  /    \   \   ''   :  ;/||   | ;\  \ `--..`; 
+                    ;   :    /      \   `  ;|   |    \:   ' | \.'.--,_    
+                    \   \ .'        :   \ ||   :   .':   : :-'  |    |`. 
+                        `---`           '---" |   | ,'  |   |.'    `-- -`, ;
+                                            `----'    `---'        '---`" 
+
+                      
+                      
+                - A hora da morte chega para todos um dia... {self.nome} morreu de Sede. -- [i]
+                      """)
+                beep_critical()
+                os._exit(666)
+            print(f"{self.nome} cresceu com sucesso! Aperte Right Shift para ver seus novos atributos!")
+            beep_ringtone()
+
+    def ganhardinheiro(self, dinheiro):
+        self.dinheiro += dinheiro
+
+    def recebersalario(self):
+        self.dinheiro += self.salario
+
+    def get_food_value(self, value):
+        if value == "podre":
+            return -10
+        if value == "pouca":
+            return 10
+        if value == "mediana":
+            return 20
+        if value == "boa":
+            return 30
+        if value == "perfeita" or value == "ceia":
+            return 50
+    def comer(self):
+        if len(self.geladeira["espaço"]) > 0:
+            comida = next(iter(self.geladeira["espaço"].items()))
+            nome = comida[1]['name']
+            print(f' \n [i] -- {self.nome} comeu {nome} --[i] \n ')
+            beep_ringtone()
+            if comida[1]['quantidade'] > 1:
+                self.geladeira['espaço'][nome]['quantidade'] -= 1 
+                food_value = self.geladeira['espaço'][nome]["saturação"]
+                new_food_value = self.get_food_value(food_value)
+                self.fome += new_food_value
+                if food_value == "podre":
+                    print(f"\n [X] -- A comida {nome} estava podre. {self.nome} ficou com mais fome. --[X] \n ")
+                    beep_error()
+                else:
+                    print(f'Agora está com: {self.fome} de alimento')
+                    beep_ringtone()
+                if self.fome > 100:
+                    self.fome = 100
+            else:
+                food_value = self.geladeira['espaço'][nome]["saturação"]
+                new_food_value = self.get_food_value(food_value)
+                new_food_value = self.get_food_value(food_value)
+                self.fome += new_food_value
+                if food_value == "podre":
+                    print(f"\n [X] -- A comida {nome} estava podre. {self.nome} ficou com mais fome. --[X] \n ")
+                    beep_error()
+                else:
+                    print(f'Agora está com: {self.fome} de alimento')
+                    beep_ringtone()
+                if self.fome > 100:
+                    self.fome = 100
+                del self.geladeira['espaço'][nome]
+        else:
+            print(f"Não tinha comida na geladeira. {self.nome} não recuperou nada")
+            beep_warn()
+    def pobre(self):
+        if self.salario > 3000:
+            return False
+        else:
+            return True
+    def adicionar_item(self, item):
+        if item["classe"] == "comida":
+            if not len(self.geladeira["espaço"]) > self.geladeira["maxslots"]:
+               if item["name"] not in self.geladeira["espaço"]:
+                    self.geladeira["espaço"][item["name"]] = item
+                    item_name  = item["name"]
+                    print(f"\n [i] -- Adicionou {item_name} a geladeira. --[i] \n")
+                    beep_ringtone()
+               else:
+                    self.geladeira["espaço"][item["name"]]["quantidade"] += item["quantidade"]
+            else:
+                print(f"{self.nome} tentou levar o item para casa, mas não tinha espaço disponível. Então ele teve que jogar fora.")
+                beep_error()
+        else:
+            if not len(self.armazenamento["espaço"]) > self.armazenamento["maxslots"]:
+               if item["name"] not in self.armazenamento["espaço"]:
+                    self.armazenamento["espaço"][item["name"]] = item
+                    item_name  = item["name"]
+                    print(f"Adicionou {item_name} ao armazenamento.")
+                    beep_warn()
+               else:
+                    self.geladeira["espaço"][item["name"]]["quantidade"] += item["quantidade"]
+            else:
+                print(f"{self.nome} tentou levar o item para casa, mas não tinha espaço disponível. Então ele teve que jogar fora.")
+                beep_error()
+
+    def mostrar_armazenavel(self, table):
+        if table == "geladeira":
+            value = self.geladeira["espaço"]
+            print("\n [+] -- GELADEIRA -- [+] ")
+        else:
+            value = self.armazenamento["espaço"]
+            print("\n [+] -- ARMAZENAMENTO -- [+] ")
+        for _, item in value.items():
+            name = item["name"]
+            valor = item["quantidade"]
+            print(f"{valor}x {name} \n")
+            os
+            beep_ringtone()
+            os.system("cls")
+
+    def comprar_item(self, lojaname, nome_do_item, quantidade):
+        try:
+            buying_shop = lojaname.items
+            if buying_shop[nome_do_item]:
+                print(f"\n [i] -- O ITEM {nome_do_item} EXISTE. -- [i]\n")
+                beep_warn()
+                if buying_shop[nome_do_item]["value"] * quantidade <= self.dinheiro:
+                    if buying_shop[nome_do_item]["quantidade"] >= quantidade:   
+                        self.dinheiro -= buying_shop[nome_do_item]["value"] * quantidade
+                        buying_shop[nome_do_item]["quantidade"] -= quantidade
+                        nome_do_item_comprado = buying_shop[nome_do_item]["name"]
+                        print(f"\n [i] -- {self.nome} comprou {quantidade}x de {nome_do_item_comprado}. Levando para casa... --[i] \n")
+                        beep_ringtone()
+                        item_armazenavel = copy.deepcopy(buying_shop[nome_do_item])
+                        dict.pop(item_armazenavel, "value")
+                        item_armazenavel["quantidade"] = quantidade
+                        try:
+                            self.adicionar_item(item_armazenavel)
+                        except Exception as e:
+                            print(f"Error adding item: {e}")
+                            beep_error()
+                else:
+                    print(f"\n [X] -- {self.nome} não conseguiu comprar item porque não tem dinheiro. Dinheiro na conta: {self.dinheiro}-- [X] ")
+                    beep_error()
+            else:
+                print(f"\n [X] -- {self.nome} não conseguiu comprar item porque não havia no estoque. Aperte AltGr para o guia. -- [X]")
+                beep_error()
+        except:
+            beep_critical()
+            print("ERRO COMPRANDO ITEM.")
+    def get_instances(self):
+        print("[<>] -- TRABALHADORES -- [<>] \n")
+        num = 1
+        for instance in self.instances:
+            print(f"{num}: Nome: {instance.nome}, Idade: {instance.idade}, Trabalho: {instance.trabalho} \n")
+            num += 1
+    def showstatus(self):
+        os.system("cls")
+        string = (f'''
+            [!] -- STATUS DO JOGADOR -- [!]
+
+                NOME: {self.nome}
+                IDADE: {self.idade}
+                TRABALHO: {self.trabalho}
+                SALÁRIO: {self.salario}
+                DINHEIRO NA CONTA BANCÁRIA: {self.dinheiro}
+                DINHEIRO NA CARTEIRA: em breve
+                ESTADO CIVIL: em breve
+
+                --- STATUS DE VIDA ---
+                FOME: {self.fome}
+                SAUDE: {self.saude}
+            
+            [!] ----------------------- [!]
+''')
+        print(string)
+        beep_ringtone_keep()
+
+
+class Loja:
+    inst = []
+    def __init__(self):
+        self.items = {}
+        Loja.inst.append(self)
+
+    def add_item(self, item, value, quantidade, classe, nutricao):
+        self.items[item] = {"name":item, "value":value, "quantidade":quantidade, "classe":classe, "saturação":nutricao}
+
+    def remove_item(self, remitem):
+        if self.items[remitem]:
+            dict.pop(self.items, remitem)
+    def list_items(self, player):
+        beep_ringtone_fast()  
+        print("\n [+]--- LOJA ---[+] \n")
+        for _, item in self.items.items():
+            item_name = item["name"]
+            item_val = item["value"]
+            item_q = item["quantidade"]
+            print(f"{item_q}x de {item_name} por {item_val}\n")  
+        print(f"SEU DINHEIRO: ")
+        print("\n\n\n")        
+    def random_restock(self,min,max):
+        for _, item in self.items.items():
+            randomnum = random.randint(min, max)
+            item["quantidade"] += randomnum
+    def get_shops(self):
+        print("[$] -- LOJAS -- [$] \n")
+        id = 0
+        for instance in self.inst:
+            id += 1
+            print(f"{id}: \n")
+            instance.list_items()
+if __name__ == "__main__":
+    shop = Loja()
+
+    shop.add_item("Batata", 50, 10, "comida", "mediana")
+
+    shop.random_restock(1, 10)
+
+
+
+
+    maria = Trabalhador("Maria", 18, 123, "Desempregado", 10000)
+
+    shop.list_items(maria)
+
+
+    maria.comprar_item(shop, "Batata", 2)
+    maria.fome = 50
+    maria.mostrar_armazenavel('geladeira')
+    maria.comer()
+    maria.mostrar_armazenavel("geladeira")
+    maria.comer()
+
+
+
+
