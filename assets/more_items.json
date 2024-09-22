@@ -12,11 +12,6 @@
     },
     "custom_items": {
         "Example Item":{
-            "name":"Exemplo",
-            "quantidade":0,
-            "classe":"comida",
-            "value":200,
-            "saturacao":"ceia"
         }
     }
     }
