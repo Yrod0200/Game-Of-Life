@@ -4,6 +4,8 @@ import sys
 import time
 import os
 import io
+import json
+import random
 from pynput.keyboard import Key, Listener
 import threading
 RED = '\033[31m'
@@ -14,12 +16,6 @@ RESET = '\033[0m'
 def play_tone(frequency, duration):
     winsound.Beep(frequency, duration)
     time.sleep(duration / 1000)
-melody = [
-    (392, 500), (440, 500), (494, 500), (523, 500), # G4, A4, B4, C5
-    (494, 500), (440, 500), (392, 500),             # B4, A4, G4
-    (440, 500), (494, 500), (523, 500), (587, 500), # A4, B4, C5, D5
-    (523, 500), (494, 500), (440, 500),             # C5, B4, A4
-]
 
 def beep_error():
     winsound.Beep(100, 1500)
@@ -45,25 +41,12 @@ def beep_ringtone_fast():
 def nuhuh():
     pass
 
-default_items ={
-    "Frango":{
-        "name":"Frango",
-        "quantidade":2,
-        "value":550,
-        "classe":"comida",
-        "saturação":"boa"
-    },
-    "Batata":{
-        "name":"Batata",
-        "quantidade":5,
-        "classe":"comida",
-        "value":20,
-        "saturação":"pouca"
-    }
-}
+BASE_DIR = (os.path.join(os.path.dirname(__file__)))
+with open(rf'{BASE_DIR}\assets\game_foods.json', 'r') as file:
+    default_items = json.load(file)
 
-
-
+with open(rf'{BASE_DIR}\assets\more_items.json', 'r') as file:
+    custom_items = json.load(file)
 
 class StartGame:
     def __init__(self):
@@ -87,20 +70,15 @@ class StartGame:
             sys.exit(-1)
         except ValueError:
             nuhuh()
-        if "Yuri".lower() in nome.lower():
-            print("Não pode jogar comigo... Sei lá o que você vai me fazer fazer... Vou desligar por conta própia...")
-            for note in melody:
-                play_tone(note[0], note[1])
-            sys.exit(-666)
         winsound.Beep(1000, 500)
         selecionadotrabalho = input("""
                     Qual seu trabalho? 
-                [1] - Atendente do MC Donalds - Salário = 500
+                [1] - Trabalho Inicial- Salário = 500
                 [2] - Desempregado
                 [3] - Faculdade       
                 Insira a Opção: """)
         if selecionadotrabalho == "1":
-            trabalho = "Atendente do MC Donalds"
+            trabalho = "Trabalho Inicial"
             salario = 500
         elif selecionadotrabalho == "2":
             trabalho = "Desempregado"
@@ -129,9 +107,10 @@ class terminal_events():
         self.jogador = jogador  
         self.loja = game.Loja()
         for _, item in default_items.items():
-            self.loja.add_item(item["name"], item["value"], item["quantidade"], item["classe"], item["saturação"])
+            chance = random.randint(0,3)
+            if chance > 1:
+                self.loja.add_item(item["name"], item["value"], item["quantidade"], item["classe"], item["saturacao"])
         pass
-
         self.listen()
     def on_release(self, key):
         if key == Key.alt_gr:
@@ -162,7 +141,8 @@ class terminal_events():
         [.] -- MENU DE AÇÕES. FAÇA DE TUDO AQUI! -- [.]
         [1] - COMPRAR NA LOJA
         [2] - COMER ITEM (MAIS VELHO DA GELADEIRA.)
-        [3] - IR AO MÉDICO (DISPONÍVEL UMA VEZ POR MINUTO.).
+        [3] - IR AO MÉDICO
+        [4] - TRABALHAR
                          
         INSIRA A OPÇÃO: """)
         stringio.write(data)
@@ -173,6 +153,7 @@ class terminal_events():
 
         if resposta == "1":
             self.loja.list_items(self.jogador)
+            print(f"SEU DINHEIRO: {self.jogador.dinheiro}")
             item_tobuy = input("Que item deseja comprar (Use o nome do item)? ")
             quantity_tobuy = int(input("Qual quantidade deseja comprar? "))
             self.jogador.comprar_item(self.loja, item_tobuy, quantity_tobuy)
@@ -180,10 +161,23 @@ class terminal_events():
             self.jogador.comer()
         elif resposta == "3":
             self.jogador.ir_ao_medico()
+        elif resposta == "4":
+            self.jogador.trabalhar()
         
 
     def _grow_up_task(self):
         self.jogador.crescer()
+        for _, item in default_items.items():
+            chance = random.randint(0,3)
+            if chance > 1:
+                self.loja.add_item(item["name"], item["value"], 0, item["classe"], item["saturacao"])
+        
+        self.loja.random_restock(4, 6)
+        if len(custom_items['custom_items']) > 0:
+            for _, item in custom_items['custom_items'].items():
+                chance = random.randint(1, 5)
+                if chance >= 0:
+                    self.loja.add_item((item['name']), item['value'], random.randint(1,5), item['classe'], item['saturacao'])
         time.sleep(10)
         self.debounce = False
     
@@ -197,7 +191,7 @@ class terminal_events():
 
         * [Right Shift / Shift Direito] - ABRE O MENU DE STATUS ATUAIS.                         
 
-        * [Alt] - Abre o menu de ações
+        * [F12] - Abre o menu de ações
         
         * [Shift] - Cresce +1 de idade.
 

@@ -1,0 +1,16 @@
+{
+    "Frango":{
+        "name":"Frango",
+        "quantidade":2,
+        "value":550,
+        "classe":"comida",
+        "saturacao":"boa"
+    },
+    "Batata":{
+        "name":"Batata",
+        "quantidade":5,
+        "classe":"comida",
+        "value":20,
+        "saturacao":"pouca"
+    }
+}

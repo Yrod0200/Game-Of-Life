@@ -6,6 +6,9 @@ import winsound
 import time
 import os
 import sys
+import json
+import math
+
 def beep_critical():
     winsound.Beep(57, 5000)
     time.sleep(2)
@@ -37,6 +40,7 @@ class Pessoa:
         self.idade = idade
         self.saude = 100
         self.fome = 100
+        self.energia = 100
 
     def demaior(self):
         if self.idade >= 18:
@@ -105,12 +109,13 @@ class Trabalhador(Pessoa):
                       """)
         else:
             self.idade += 1
-            random_hunger_decrease = random.randint(50, 80)
+            self.energia = 100
+            random_hunger_decrease = random.randint(10, 30)
             self.fome -= random_hunger_decrease
-            random_will_lose_health = random.randint(0, 1)
-            if random_will_lose_health == 1:
+            random_will_lose_health = random.randint(0, 3)
+            if random_will_lose_health > 1:
                 self.saude -= random.randint(1, 30)
-            if self.fome < 0:
+            if self.fome <= 0:
                 print(f"""            
                     ,----..      ,---,               ,'  , `.    ,---,.   
                     /   /   \    '  .' \           ,-+-,.' _ |  ,'  .' |   
@@ -188,8 +193,21 @@ class Trabalhador(Pessoa):
     def ganhardinheiro(self, dinheiro):
         self.dinheiro += dinheiro
 
-    def recebersalario(self):
-        self.dinheiro += self.salario
+    def trabalhar(self):
+        print(f"[i] -- {self.nome} foi trabalhar! --[i] ")
+        beep_ringtone()
+        if self.energia > 10:
+            print(f"[i] -- {self.nome} tem energia para trabalhar, trabalhando... -- [i]")
+            beep_ringtone()
+            self.energia -= 10
+            self.dinheiro += self.salario / 24
+            value = self.dinheiro
+            self.dinheiro =  math.floor(value)
+            print(f"[i] -- {self.nome} trabalhou com sucesso e recebeu seu salário de hora! seu dinheiro agora é: {self.dinheiro} --[i]")
+            beep_ringtone_keep()
+        else:
+            print(f"[x]-- {self.nome} está cansado demais para trabalhar. --[x]")
+
 
     def get_food_value(self, value):
         if value == "podre":
@@ -335,6 +353,7 @@ class Trabalhador(Pessoa):
                 --- STATUS DE VIDA ---
                 FOME: {self.fome}
                 SAUDE: {self.saude}
+                ENERGIA: {self.energia}
             
             [!] ----------------------- [!]
 ''')
@@ -348,7 +367,18 @@ class Trabalhador(Pessoa):
             print(f"{self.nome} foi diagnosticado com {doenca}")
             beep_ringtone()
             print("[i] -- Curando... - [i]")
-
+            beep_ringtone()
+            chance = random.randint(0,1)
+            if chance == 1:
+                print("[V] -- CURADO COM SUCESSO! -- [V]")
+                self.saude == 100
+                beep_ringtone_keep()
+            else:
+                print("[X] -- ERRO AO CURAR, SUA SAÚDE DIMINUIU. -- [X]")
+                self.saude -= 15
+                beep_critical()
+        else:
+            print("Você não esta doente!")
 
 class Loja:
     inst = []
@@ -370,8 +400,6 @@ class Loja:
             item_val = item["value"]
             item_q = item["quantidade"]
             print(f"{item_q}x de {item_name} por {item_val}\n")  
-        print(f"SEU DINHEIRO: ")
-        print("\n\n\n")        
     def random_restock(self,min,max):
         for _, item in self.items.items():
             randomnum = random.randint(min, max)

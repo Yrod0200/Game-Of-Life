@@ -1,0 +1,22 @@
+{
+    "_comment": "AQUI VOCÊ PODE ADICIONAR MAIS ITEMS AO LONGO DO JOGO.",
+    "-warning": "SEMRPE COLOQUE O NOME DO ITEM O MESMO DA CHAVE",
+    "_example": {
+        "Exemplo":{
+            "name":"Exemplo",
+            "quantidade":0,
+            "classe":"comida /ou/ outro",
+            "value":"Valor em int Exemplo: 0, 10, 100",
+            "saturacao":"podre, pouca, mediana, boa, perfeita. USE ESSES VALORES PARA NÃO QUEBRAR O JOGO."
+        }
+    },
+    "custom_items": {
+        "Example Item":{
+            "name":"Exemplo",
+            "quantidade":0,
+            "classe":"comida",
+            "value":200,
+            "saturacao":"ceia"
+        }
+    }
+    }
