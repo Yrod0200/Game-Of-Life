@@ -1,5 +1,4 @@
 import game 
-import winsound
 import sys
 import time
 import os
@@ -7,11 +6,18 @@ import io
 import json
 import random
 from pynput.keyboard import Key, Listener
+import pynput.keyboard as keyb
 import threading
 RED = '\033[31m'
 GREEN = '\033[32m'
 BLUE = '\033[34m'
 RESET = '\033[0m'
+
+try:
+    import winsound
+except ImportError or ModuleNotFoundError:
+    print("Failed to import Winsound. Using FakeWinsound Instead")
+    winsound = game.FakeWinsound()
 
 def play_tone(frequency, duration):
     winsound.Beep(frequency, duration)
@@ -47,6 +53,9 @@ with open(rf'{BASE_DIR}\assets\game_foods.json', 'r') as file:
 
 with open(rf'{BASE_DIR}\assets\more_items.json', 'r') as file:
     custom_items = json.load(file)
+
+with open(rf'{BASE_DIR}\assets\save.json', 'r') as file:
+    save_file = json.load(file)
 
 class StartGame:
     def __init__(self):
@@ -121,6 +130,8 @@ class terminal_events():
             self.grow_up()
         if key == Key.f12:
             self.action_menu()
+        if key == keyb.KeyCode.from_char('s'):
+            self.save_warning()
     def listen(self):
         with Listener(
             on_release=self.on_release
@@ -194,10 +205,66 @@ class terminal_events():
         * [F12] - Abre o menu de ações
         
         * [Shift] - Cresce +1 de idade.
+                  
+        * [S] - Aperte S para salvar.
 
 
 ''')
         print(string)
         beep_ringtone_keep()
 
+        
+    def save_game(self):
+        playerdata = save_file["PlayerData"]
+        shopdata = save_file["ShopData"] 
+        playerstorages = save_file["PlayerStorages"]
 
+        data = {}
+        for _, shop in self.loja.inst:
+            shopitems = data[shop] = shop.items
+            data["ShopData"][shop] = shopitems
+        
+        playerdata = {}
+        playerdata["nome"] = self.jogador.nome
+        playerdata["idade"] = self.jogador.idade
+        playerdata["trabalho"] = self.jogador.trabalho
+        playerdata["trabalho"] = self.jogador.salario
+        playerdata["dinheiro"] = self.jogador.dinheiro
+        playerdata["status"]["saude"] = self.jogador.saude
+        playerdata["status"]["fome"] = self.jogador.fome
+        playerdata["status"]["energia"] = self.jogador.energia
+
+        playerstorages = {}
+        playerstorages["PlayerStorages"]["geladeira"] = self.jogador.geladeira
+        playerstorages["PlayerStorages"]["armazenamento"] = self.jogador.armazenamento
+
+        jsonloader = {
+            "active":True,
+            "PlayerData": {
+                playerdata
+            },
+            "PlayerStorages":{
+                playerstorages
+            },
+            "ShopData":{
+                data
+            }
+            }
+        jsonfile = json.dumps(jsonloader)
+        with open(rf'{BASE_DIR}\assets\save.json', 'w') as f:
+            f.write(jsonfile)
+            print("Sucess...")
+            sys.exit(1)
+
+    def save_warning(self):
+        print(save_file)
+        if save_file['active'] == "False":
+            print("[i] -- SEU ARQUIVO DE SAVE ESTÁ DESATIVADO. SOBREESCREVENDO SAVE ANTIGO. --[i]")
+            print("(Ignore essa mensagem se essa for a primeira vez que você estiver jogando.")
+        else:
+            print("[I] ==== IMPORTANTE ==== [I]")
+            inp = input("Um arquivo de save já foi encontrado. Deseja sobre-escrever ele? y/N")
+            if inp.lower == "y" or inp == "":
+                self.save_game()
+            else:
+                print("Aboratando...")

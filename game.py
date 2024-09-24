@@ -2,12 +2,23 @@ import copy
 import math
 import random
 import json
-import winsound
 import time
 import os
 import sys
 import json
 import math
+
+class FakeWinsound:
+    def __init__(self) -> None:
+        pass
+    def Beep():
+        print("\b")
+
+try:
+    import winsound
+except ImportError or ModuleNotFoundError:
+    print("Failed to import Winsound. Using FakeWinsound Instead")
+    winsound = FakeWinsound()
 
 def beep_critical():
     winsound.Beep(57, 5000)
@@ -196,18 +207,21 @@ class Trabalhador(Pessoa):
     def trabalhar(self):
         print(f"[i] -- {self.nome} foi trabalhar! --[i] ")
         beep_ringtone()
-        if self.energia > 10:
-            print(f"[i] -- {self.nome} tem energia para trabalhar, trabalhando... -- [i]")
-            beep_ringtone()
-            self.energia -= 10
-            self.dinheiro += self.salario / 24
-            value = self.dinheiro
-            self.dinheiro =  math.floor(value)
-            print(f"[i] -- {self.nome} trabalhou com sucesso e recebeu seu salário de hora! seu dinheiro agora é: {self.dinheiro} --[i]")
-            beep_ringtone_keep()
+        if self.salario > 0:
+            if self.energia > 10:
+                print(f"[i] -- {self.nome} tem energia para trabalhar, trabalhando... -- [i]")
+                beep_ringtone()
+                self.energia -= 10
+                self.dinheiro += self.salario / 24
+                value = self.dinheiro
+                self.dinheiro =  math.floor(value)
+                print(f"[i] -- {self.nome} trabalhou com sucesso e recebeu seu salário de hora! seu dinheiro agora é: {self.dinheiro} --[i]")
+                beep_ringtone_keep()
+            else:
+                print(f"[x]-- {self.nome} está cansado demais para trabalhar. --[x]")
         else:
-            print(f"[x]-- {self.nome} está cansado demais para trabalhar. --[x]")
-
+            print(f"[x] -- {self.nome} não trabalha! -- [x]")
+            beep_error()
 
     def get_food_value(self, value):
         if value == "podre":

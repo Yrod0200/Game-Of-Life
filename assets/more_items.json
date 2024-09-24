@@ -1,6 +1,6 @@
 {
     "_comment": "AQUI VOCÊ PODE ADICIONAR MAIS ITEMS AO LONGO DO JOGO.",
-    "-warning": "SEMRPE COLOQUE O NOME DO ITEM O MESMO DA CHAVE",
+    "_warning": "SEMRPE COLOQUE O NOME DO ITEM O MESMO DA CHAVE",
     "_example": {
         "Exemplo":{
             "name":"Exemplo",

@@ -1,0 +1,20 @@
+{
+    "active": "False",
+    "PlayerData": {
+        "nome":"...",
+        "idade": "...",
+        "trabalho":"...",
+        "salario":"..." ,
+        "dinheiro ":"...",
+        "status":{
+            "saude":"...",
+            "fome":"...",
+            "energia":"..."
+        }
+    },
+    "PlayerStorages":{
+        "geladeira":{},
+        "armazenamento":{}
+    },
+    "ShopData":{}
+}
