@@ -1,8 +1,4 @@
 THIS IS A TERMINAL GAME I MADE IN PYTHON TO TEST MY SKILLS.
-
-
-
-
-
-
 .............................................................
+
+YOU CAN ADD CUSTOM FOODS IN THE GAME BY USING THE EXAMPLE IN ASSETS/CUSTOM_ITEMS.JSON
