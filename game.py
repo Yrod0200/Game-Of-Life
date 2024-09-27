@@ -11,7 +11,7 @@ import math
 class FakeWinsound:
     def __init__(self) -> None:
         pass
-    def Beep():
+    def Beep(self, fake, fail):
         print("\b")
 
 try:
@@ -75,8 +75,8 @@ class Trabalhador(Pessoa):
         self.trabalho = profissao
         self.salario = salario 
         self.dinheiro = dinheiro
-        self.armazenamento = {"maxslots":10, "espaço":{}}
-        self.geladeira = {"maxslots":5, "espaço":{}}
+        self.armazenamento = {"maxslots":10, "espaco":{}}
+        self.geladeira = {"maxslots":5, "espaco":{}}
         Trabalhador.instances.append(self)
         print(f"Seja bem vindo ao mundo, {self.nome}")
 
@@ -236,14 +236,14 @@ class Trabalhador(Pessoa):
             return 50
     def comer(self):
         self.mostrar_armazenavel("geladeira")
-        if len(self.geladeira["espaço"]) > 0:
-            comida = next(iter(self.geladeira["espaço"].items()))
+        if len(self.geladeira["espaco"]) > 0:
+            comida = next(iter(self.geladeira["espaco"].items()))
             nome = comida[1]['name']
             print(f' \n [i] -- {self.nome} comeu {nome} --[i] \n ')
             beep_ringtone()
             if comida[1]['quantidade'] > 1:
-                self.geladeira['espaço'][nome]['quantidade'] -= 1 
-                food_value = self.geladeira['espaço'][nome]["saturação"]
+                self.geladeira['espaco'][nome]['quantidade'] -= 1 
+                food_value = self.geladeira['espaco'][nome]["saturacao"]
                 new_food_value = self.get_food_value(food_value)
                 self.fome += new_food_value
                 if food_value == "podre":
@@ -255,7 +255,7 @@ class Trabalhador(Pessoa):
                 if self.fome > 100:
                     self.fome = 100
             else:
-                food_value = self.geladeira['espaço'][nome]["saturação"]
+                food_value = self.geladeira['espaco'][nome]["saturacao"]
                 new_food_value = self.get_food_value(food_value)
                 new_food_value = self.get_food_value(food_value)
                 self.fome += new_food_value
@@ -267,7 +267,7 @@ class Trabalhador(Pessoa):
                     beep_ringtone()
                 if self.fome > 100:
                     self.fome = 100
-                del self.geladeira['espaço'][nome]
+                del self.geladeira['espaco'][nome]
         else:
             print(f"Não tinha comida na geladeira. {self.nome} não recuperou nada")
             beep_warn()
@@ -278,36 +278,36 @@ class Trabalhador(Pessoa):
             return True
     def adicionar_item(self, item):
         if item["classe"] == "comida":
-            if not len(self.geladeira["espaço"]) > self.geladeira["maxslots"]:
-               if item["name"] not in self.geladeira["espaço"]:
-                    self.geladeira["espaço"][item["name"]] = item
+            if not len(self.geladeira["espaco"]) > self.geladeira["maxslots"]:
+               if item["name"] not in self.geladeira["espaco"]:
+                    self.geladeira["espaco"][item["name"]] = item
                     item_name  = item["name"]
                     print(f"\n [i] -- Adicionou {item_name} a geladeira. --[i] \n")
                     beep_ringtone()
                else:
-                    self.geladeira["espaço"][item["name"]]["quantidade"] += item["quantidade"]
+                    self.geladeira["espaco"][item["name"]]["quantidade"] += item["quantidade"]
             else:
-                print(f"{self.nome} tentou levar o item para casa, mas não tinha espaço disponível. Então ele teve que jogar fora.")
+                print(f"{self.nome} tentou levar o item para casa, mas não tinha espaco disponível. Então ele teve que jogar fora.")
                 beep_error()
         else:
-            if not len(self.armazenamento["espaço"]) > self.armazenamento["maxslots"]:
-               if item["name"] not in self.armazenamento["espaço"]:
-                    self.armazenamento["espaço"][item["name"]] = item
+            if not len(self.armazenamento["espaco"]) > self.armazenamento["maxslots"]:
+               if item["name"] not in self.armazenamento["espaco"]:
+                    self.armazenamento["espaco"][item["name"]] = item
                     item_name  = item["name"]
                     print(f"Adicionou {item_name} ao armazenamento.")
                     beep_warn()
                else:
-                    self.geladeira["espaço"][item["name"]]["quantidade"] += item["quantidade"]
+                    self.geladeira["espaco"][item["name"]]["quantidade"] += item["quantidade"]
             else:
-                print(f"{self.nome} tentou levar o item para casa, mas não tinha espaço disponível. Então ele teve que jogar fora.")
+                print(f"{self.nome} tentou levar o item para casa, mas não tinha espaco disponível. Então ele teve que jogar fora.")
                 beep_error()
 
     def mostrar_armazenavel(self, table):
         if table == "geladeira":
-            value = self.geladeira["espaço"]
+            value = self.geladeira["espaco"]
             print("\n [+] -- GELADEIRA -- [+] ")
         else:
-            value = self.armazenamento["espaço"]
+            value = self.armazenamento["espaco"]
             print("\n [+] -- ARMAZENAMENTO -- [+] ")
         for _, item in value.items():
             name = item["name"]
@@ -401,7 +401,7 @@ class Loja:
         Loja.inst.append(self)
 
     def add_item(self, item, value, quantidade, classe, nutricao):
-        self.items[item] = {"name":item, "value":value, "quantidade":quantidade, "classe":classe, "saturação":nutricao}
+        self.items[item] = {"name":item, "value":value, "quantidade":quantidade, "classe":classe, "saturacao":nutricao}
 
     def remove_item(self, remitem):
         if self.items[remitem]:

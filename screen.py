@@ -215,56 +215,61 @@ class terminal_events():
 
         
     def save_game(self):
-        playerdata = save_file["PlayerData"]
-        shopdata = save_file["ShopData"] 
-        playerstorages = save_file["PlayerStorages"]
+        try:
+            playerdata = save_file["PlayerData"]
+            playerstorages = save_file["PlayerStorages"]
 
-        data = {}
-        for _, shop in self.loja.inst:
-            shopitems = data[shop] = shop.items
-            data["ShopData"][shop] = shopitems
-        
-        playerdata = {}
-        playerdata["nome"] = self.jogador.nome
-        playerdata["idade"] = self.jogador.idade
-        playerdata["trabalho"] = self.jogador.trabalho
-        playerdata["trabalho"] = self.jogador.salario
-        playerdata["dinheiro"] = self.jogador.dinheiro
-        playerdata["status"]["saude"] = self.jogador.saude
-        playerdata["status"]["fome"] = self.jogador.fome
-        playerdata["status"]["energia"] = self.jogador.energia
+            data = {}
+            data["ShopData"] = {}
+            num = 0
+            for shop in self.loja.inst:
+                num += 1
+                data["ShopData"][str(num)] = shop.items
+            
+  
+            playerdata = {}
+            playerdata["status"] = {}
 
-        playerstorages = {}
-        playerstorages["PlayerStorages"]["geladeira"] = self.jogador.geladeira
-        playerstorages["PlayerStorages"]["armazenamento"] = self.jogador.armazenamento
+            playerdata["nome"] = self.jogador.nome
+            playerdata["idade"] = self.jogador.idade
+            playerdata["trabalho"] = self.jogador.trabalho
+            playerdata["salario"] = self.jogador.salario
+            playerdata["dinheiro"] = self.jogador.dinheiro
+            playerdata["status"]["saude"] = self.jogador.saude
+            playerdata["status"]["fome"] = self.jogador.fome
+            playerdata["status"]["energia"] = self.jogador.energia
 
-        jsonloader = {
-            "active":True,
-            "PlayerData": {
-                playerdata
-            },
-            "PlayerStorages":{
-                playerstorages
-            },
-            "ShopData":{
-                data
-            }
-            }
-        jsonfile = json.dumps(jsonloader)
-        with open(rf'{BASE_DIR}\assets\save.json', 'w') as f:
-            f.write(jsonfile)
-            print("Sucess...")
+            playerstorages = {}
+            playerstorages["PlayerStorages"] = {}
+
+            playerstorages["PlayerStorages"]["geladeira"] = self.jogador.geladeira
+            playerstorages["PlayerStorages"]["armazenamento"] = self.jogador.armazenamento
+
+            jsonloader = {
+                "active":True,
+                "PlayerData": playerdata,
+
+                "PlayerStorages": playerstorages,
+
+                "ShopData": data,
+                }
+            jsonfile = json.dumps(jsonloader, indent=4)
+            with open(rf'{BASE_DIR}\assets\save.json', 'w') as f:
+                f.write(jsonfile)
+                print("Sucess...")
             sys.exit(1)
+        except Exception as e:
+            print(f"Failed to save: {e}")
 
     def save_warning(self):
-        print(save_file)
-        if save_file['active'] == "False":
+        if save_file['active'] == False:
             print("[i] -- SEU ARQUIVO DE SAVE ESTÁ DESATIVADO. SOBREESCREVENDO SAVE ANTIGO. --[i]")
             print("(Ignore essa mensagem se essa for a primeira vez que você estiver jogando.")
+            self.save_game()
         else:
             print("[I] ==== IMPORTANTE ==== [I]")
             inp = input("Um arquivo de save já foi encontrado. Deseja sobre-escrever ele? y/N")
-            if inp.lower == "y" or inp == "":
+            if inp.lower() == "y" or inp == "":
                 self.save_game()
             else:
                 print("Aboratando...")
